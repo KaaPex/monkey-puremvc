@@ -15,6 +15,6 @@ Public Interface IFunction
 	'/**
 	 '* @param notification
 	 '*/
-	Method OnNotification( notification:INotification  )
+	Method OnNotification:Void( notification:INotification  )
 	
 End Interface

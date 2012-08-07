@@ -5,7 +5,7 @@
 '*/
 Strict
 
-Import puremvc.interfaces.inediator
+Import puremvc.interfaces.imediator
 Import puremvc.interfaces.inotification
 Import puremvc.interfaces.inotifier
 Import puremvc.patterns.observer.notifier
@@ -26,13 +26,13 @@ Public Class Mediator Extends Notifier Implements IMediator, INotifier
 	 '* will not have a need to be dynamically named.</P>
 	 '*/
 Public 
-	Final Const NAME:String = 'Mediator'
+	Const NAME:String = "Mediator"
 	
 	'/**
 	 '* Constructor.
 	 '*/
-	Method New( mediatorName:String=Null, viewComponent:Object=Null )
-		If (mediatorName <> Null) Then
+	Method New( mediatorName:String="", viewComponent:Object=Null )
+		If (mediatorName <> "") Then
 			_mediatorName = mediatorName
 		Else 
 			_mediatorName = NAME
@@ -74,7 +74,7 @@ Public
 	 '* 
 	 '* @return the view component
 	 '*/		
-	Method getViewComponent:Object()
+	Method GetViewComponent:Object()
 		Return viewComponent;
 	End Method
 
@@ -85,7 +85,7 @@ Public
 	 '* @return Array the list of <code>INotification</code> names 
 	 '*/
 	Method ListNotificationInterests:String[]() 
-		Return New String[]
+		Return []
 	End Method
 
 	'/**
@@ -110,11 +110,13 @@ Public
 	 '*/ 
 	Method OnRemove:Void( )
 	End Method
-
+	
+	'// The view component
+	Field _viewComponent:Object
+	
 Private
 	'// the mediator name
 	Field _mediatorName:String
 
-	'// The view component
-	Field _viewComponent:Object
+
 End Class

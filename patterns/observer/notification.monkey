@@ -43,8 +43,7 @@ Import puremvc.interfaces.inotification
  '* 
  '*/
 Public Class Notification Implements INotification
-{
-	
+
 	'/**
 	 '* Constructor. 
 	 '* 
@@ -52,7 +51,7 @@ Public Class Notification Implements INotification
 	 '* @param body the <code>Notification</code> body. (optional)
 	 '* @param type the type of the <code>Notification</code> (optional)
 	 '*/
-	Method New( name:String, body:Object=Null, type:String=Null )
+	Method New( name:String, body:Object=Null, type:String="")
 		_name = name
 		_body = body
 		_type = type
@@ -107,13 +106,13 @@ Public Class Notification Implements INotification
 	Method ToString:String()
 		String result = "Notification Name: " + GetName() + " Body:"
 		If( body <> Null ) Then
-			result += body.ToString() + " Type:"
+		'	result += _body.ToString() + " Type:"
 		Else
 			result += "null Type:"
-		Else	
+		Endif	
 		
 		If( type <> Null ) Then
-			result += type
+			result += _type
 		Else
 			result += "null "
 		Endif	
@@ -125,7 +124,7 @@ Private
 	'// the name of the notification instance
 	Field _name			: String
 	'// the type of the notification instance
-	Field type			: String
+	Field _type			: String
 	'// the body of the notification instance
 	Field _body			: Object
 	

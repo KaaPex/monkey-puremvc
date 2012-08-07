@@ -34,8 +34,8 @@ Public Class Proxy Extends Notifier Implements IProxy, INotifier
 	'/**
 	 '* Constructor
 	 '*/
-	Method New( proxyName:String=Null, data:Object=Null ) 
-		If (proxyName <> Null) Then
+	Method New( proxyName:String="", data:Object=Null ) 
+		If (proxyName <> "") Then
 			_proxyName = proxyName
 		Endif	 
 		If (data <> Null) Then
@@ -53,7 +53,7 @@ Public Class Proxy Extends Notifier Implements IProxy, INotifier
 	'/**
 	 '* Set the data object
 	 '*/
-	Method SetData:void( data:Object ) 
+	Method SetData:Void( data:Object ) 
 		_data = data
 	End Method
 	
@@ -76,11 +76,11 @@ Public Class Proxy Extends Notifier Implements IProxy, INotifier
 	Method OnRemove:Void( ) 
 	End Method
 	
-Private	
-	'// the proxy name
-	Field _proxyName:String = 'Proxy'
-	
 	'// the data object
 	Field _data:Object
-
+		
+Private	
+	'// the proxy name
+	Field _proxyName:String = "Proxy"
+	
 End Class

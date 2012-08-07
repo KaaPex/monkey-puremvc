@@ -71,12 +71,12 @@ Public Class Controller Implements IController
 	 '* 
 	 '* @return the Singleton instance of <code>Controller</code>
 	 '*/
-	Method GetInstance : IController()
+	Function GetInstance : IController()
 		If ( _instance = Null ) Then
 			_instance = New Controller( )
 		Endif	
 		Return _instance
-	End Method
+	End Function
 
 	'/**
 	 '* If an <code>ICommand</code> has previously been registered 
@@ -84,8 +84,8 @@ Public Class Controller Implements IController
 	 '* 
 	 '* @param note an <code>INotification</code>
 	 '*/
-	Method ExecuteCommand( note : INotification ) : void
-		Local commandInstance : ICommand = ICommand(New  _commandMap.Get( note.GetName() ))
+	Method ExecuteCommand : void( note : INotification )
+		Local commandInstance : ICommand = ICommand(New _commandMap.Get( note.GetName() ))
 		If ( commandInstance <> Null ) Then
 			commandInstance.Execute( note )
 		Endif	
@@ -130,7 +130,7 @@ Public Class Controller Implements IController
 	 '* 
 	 '* @param notificationName the name of the <code>INotification</code> to remove the <code>ICommand</code> mapping for
 	 '*/
-	Method RemoveCommand( notificationName : String ) : void
+	Method RemoveCommand : void( notificationName : String )
 		'// if the Command is registered...
 		If ( HasCommand( notificationName ) ) Then
 			'// remove the observer
@@ -141,6 +141,9 @@ Public Class Controller Implements IController
 		Endif
 	End Method
 	
+	'// Singleton instance
+	Global _instance : IController
+		
 Private	
 	'/**
 	 '* Initialize the Singleton <code>Controller</code> instance.
@@ -172,12 +175,10 @@ Private
 	'// Mapping of Notification names to Command Class references
 	Field _commandMap : StringMap<ICommand>
 
-	'// Singleton instance
-	Field _instance : IController
+End Class
 
-	Class NotifyFunction Implements IFunction
-		Method  OnNotification:Void( notification:INotification  )
-			ExecuteCommand( notification )
-		End Method
-	End Class
+Class NotifyFunction Implements IFunction
+	Method  OnNotification:Void( notification:INotification  )
+		ExecuteCommand( notification )
+	End Method
 End Class

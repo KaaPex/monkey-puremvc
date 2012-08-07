@@ -38,6 +38,7 @@ Import puremvc.interfaces.iproxy
  
 Public Class Model Implements IModel
 
+Public
 	'/**
 	 '* Constructor. 
 	 '* 
@@ -75,12 +76,12 @@ Public Class Model Implements IModel
 	 '* 
 	 '* @return the Singleton instance
 	 '*/
-	Method GetInstance : IModel() 
+	Function GetInstance : IModel() 
 		If (_instance = Null) Then 
 			_instance = New Model( )
 		Endif	
 		Return _instance
-	End Method
+	End Function
 
 	'/**
 	 '* Register an <code>IProxy</code> with the <code>Model</code>.
@@ -126,12 +127,12 @@ Public Class Model Implements IModel
 		Endif
 		Return proxy
 	End Method
-
+	
+	'// Singleton instance
+	Global _instance : IModel
+	
 Private
 	'// Mapping of proxyNames to IProxy instances
 	Field _proxyMap : StringMap<IProxy>
-
-	'// Singleton instance
-	Field _instance : IModel
 	
 End Class

@@ -67,8 +67,8 @@ Public Class Notifier Implements INotifier
 	 '*            the body of the notification (optional)
 	 '*/
 
-	Method SendNotification:Void( notificationName:String, Object body)
-		_facade.sendNotification( notificationName, body)
+	Method SendNotification:Void( notificationName:String,  body:Object)
+		_facade.SendNotification( notificationName, body )
 	End Method
 	
 	'/**
@@ -83,13 +83,13 @@ Public Class Notifier Implements INotifier
 	 '*/
 
 	Method SendNotification:Void( notificationName:String)
-		_facade.sendNotification( notificationName)
+		_facade.SendNotification( notificationName )
 	End Method
 	
 	'// The Multiton Key for this app
 	'/**
 	 '* Local reference to the Facade Singleton
 	 '*/
-	Private _facade:Facade = Facade.GetInstance()
+	Field _facade:Facade = Facade.GetInstance()
 		
 End Class

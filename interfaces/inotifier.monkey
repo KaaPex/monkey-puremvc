@@ -42,7 +42,7 @@ Public Interface INotifier
 	 '* @param body the body of the notification (optional)
 	 '* @param type the type of the notification (optional)
 	 '*/ 
-	Method SendNotification:Void( notificationName:String, body:Object=Null, type:String=Null )
+	Method SendNotification:Void( notificationName:String, body:Object=Null, type:String="" )
 	'/**
 	 '* Send a <code>INotification</code>.
 	 '* 

@@ -5,15 +5,15 @@
 '*/
 Strict
 
-Import puremvc.core.Controller
-Import puremvc.core.Model
-Import puremvc.core.View
-Import puremvc.interfaces.ICommand
-Import puremvc.interfaces.IFacade
-Import puremvc.interfaces.IMediator
-Import puremvc.interfaces.INotification
-Import puremvc.interfaces.IProxy
-Import puremvc.patterns.observer.Notification
+Import puremvc.core.controller
+Import puremvc.core.model
+Import puremvc.core.view
+Import puremvc.interfaces.icommand
+Import puremvc.interfaces.ifacade
+Import puremvc.interfaces.imediator
+Import puremvc.interfaces.inotification
+Import puremvc.interfaces.iproxy
+Import puremvc.patterns.observer.notification
 
 '/**
  '* A base Singleton <code>IFacade</code> implementation.
@@ -60,6 +60,7 @@ Public Class Facade Implements IFacade
 		InitializeFacade()
 	End Method
 
+Public
 	'/**
 	 '* Initialize the Singleton <code>Facade</code> instance.
 	 '* 
@@ -79,12 +80,12 @@ Public Class Facade Implements IFacade
 	 '* 
 	 '* @return the Singleton instance of the Facade
 	 '*/
-	Method GetInstance:IFacade()
+	Function GetInstance:Facade()
 		If (_instance = Null) Then
 			_instance = New Facade( )
 		Endif	 
 		Return _instance
-	End Method
+	End Function
 
 	'/**
 	 '* Initialize the <code>Controller</code>.
@@ -204,7 +205,7 @@ Public
 	 '* @param proxyName the name of the <code>IProxy</code>.
 	 '* @param proxy the <code>IProxy</code> instance to be registered with the <code>Model</code>.
 	 '*/
-	Method registerProxy:Void ( proxy:IProxy )	
+	Method RegisterProxy:Void ( proxy:IProxy )	
 		_model.RegisterProxy ( proxy )
 	End Method
 			
@@ -271,7 +272,6 @@ Public
 	 '* @return the <code>IMediator</code> that was removed from the <code>View</code>
 	 '*/
 	Method RemoveMediator : IMediator( mediatorName:String ) 
-		var mediator:IMediator;
 		If ( _view <> Null ) Then
 			Return _view.RemoveMediator( mediatorName )
 		Endif	
@@ -298,7 +298,7 @@ Public
 	 '* @param body the body of the notification (optional)
 	 '* @param type the type of the notification (optional)
 	 '*/ 
-	Method SendNotification:Void ( notificationName:String, body:Object=Null, type:String=Null )
+	Method SendNotification:Void ( notificationName:String, body:Object=Null, type:String="" )
 		NotifyObservers( New Notification( notificationName, body, type ) );
 	End Method
 	
@@ -311,8 +311,8 @@ Public
 	 '* @param notificationName the name of the notification to send
 	 '* @param body the body of the notification (optional)
 	 '*/ 
-	Method SendNotification( notificationName:String, body:Object=Null ) 
-		SendNotification( notificationName, body, Null )
+	Method SendNotification:Void( notificationName:String, body:Object=Null ) 
+		SendNotification( notificationName, body, "" )
 	End Method
 	
 	'/**
@@ -323,8 +323,8 @@ Public
 	 '* instances in our implementation code.
 	 '* @param notificationName the name of the notification to send
 	 '*/ 
-	Public Void SendNotification( notificationName:String ) 
-		SendNotification( notificationName, Null, Null )
+	Method SendNotification:Void( notificationName:String ) 
+		SendNotification( notificationName, Null, "" )
 	End Method
 	
 	'/**
@@ -345,14 +345,14 @@ Public
 			_view.NotifyObservers( notification )
 		Endif	
 	End Method
-
+	
+	'// The Singleton Facade instance.
+	Global _instance : Facade = Null
+	
 Private 
 	'// Private references to Model, View and Controller
 	Field _controller : IController = Null
 	Field _model	  : IModel = Null
 	Field _view		  : IView = Null
-	
-	'// The Singleton Facade instance.
-	Field instance : IFacade = Null
 
 End Class
