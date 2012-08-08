@@ -186,7 +186,7 @@ Class View Implements IView
 		If ( noteInterests.Length() > 0 ) Then
 
 			'// Create Observer referencing this mediator's handlNotification method
-			Local observer:Observer = New Observer( GetClass(mediator).GetMethod("HandleNotification",[]), mediator )
+			Local observer:Observer = New Observer( GetClass(mediator).GetMethod("HandleNotification",[GetClass("INotification")]), mediator )
 
 			'// Register Mediator as Observer for its list of Notification interests
 			For Local i:Int=0 Until noteInterests.Length()

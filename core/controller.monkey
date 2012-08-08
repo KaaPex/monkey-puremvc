@@ -110,7 +110,7 @@ Public Class Controller Implements IController
 			Return
 		Endif
 
-		_view.RegisterObserver(	notificationName, New Observer( GetClass(self).GetMethod("ExecuteCommand",[]), Self ) )
+		_view.RegisterObserver(	notificationName, New Observer( GetClass(self).GetMethod("ExecuteCommand",[GetClass("INotification")]), Self ) )
 	
 	End Method
 	
