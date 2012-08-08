@@ -4,10 +4,10 @@
  'Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-Import imodel
-Import iview
-Import icontroller
-Import icommand
+Import reflection
+Import inotifier
+Import iproxy
+Import imediator
 Import inotification
 
 '/**
@@ -68,7 +68,7 @@ Public Interface IFacade Extends INotifier
 	 '* @param noteName the name of the <code>INotification</code> to associate the <code>ICommand</code> with.
 	 '* @param commandClassRef a reference to the <code>Class</code> of the <code>ICommand</code>.
 	 '*/
-	Method RegisterCommand : Void( noteName : String, commandClassRef : ICommand )
+	Method RegisterCommand : Void( noteName : String, commandClassRef : ClassInfo )
 	
 	'/**
 	 '* Remove a previously registered <code>ICommand</code> To <code>INotification</code> mapping from the Controller.
@@ -83,7 +83,7 @@ Public Interface IFacade Extends INotifier
 	 '* @param notificationName
 	 '* @return whether a Command is currently registered for the given <code>notificationName</code>.
 	 '*/
-	Method HasComman : Boold( notificationName:String )
+	Method HasCommand : Bool( notificationName:String )
 	
 	'/**
 	 '* Register an <code>IMediator</code> instance with the <code>View</code>.

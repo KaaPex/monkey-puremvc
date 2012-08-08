@@ -4,7 +4,7 @@
  'Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-
+Import reflection
 Import puremvc.core.controller
 Import puremvc.core.model
 Import puremvc.core.view
@@ -57,6 +57,7 @@ Public Class Facade Implements IFacade
 	 '* 
 	 '*/
 	Method New( )
+		instance = self
 		InitializeFacade()
 	End Method
 
@@ -80,11 +81,11 @@ Public
 	 '* 
 	 '* @return the Singleton instance of the Facade
 	 '*/
-	Function GetInstance:Facade()
-		If (_instance = Null) Then
-			_instance = New Facade( )
+	Function GetInstance:IFacade()
+		If (instance = Null) Then
+			instance = New Facade( )
 		Endif	 
-		Return _instance
+		Return instance
 	End Function
 
 	'/**
@@ -176,7 +177,7 @@ Public
 	 '* @param notificationName the name of the <code>INotification</code> to associate the <code>ICommand</code> with
 	 '* @param commandClassRef a reference to the Class of the <code>ICommand</code>
 	 '*/
-	Method RegisterCommand:Void( notificationName:String, commandClassRef:ICommand ) 
+	Method RegisterCommand:Void( notificationName:String, commandClassRef:ClassInfo ) 
 		_controller.RegisterCommand( notificationName, commandClassRef )
 	End Method
 
@@ -226,7 +227,7 @@ Public
 	 '* @return the <code>IProxy</code> that was removed from the <code>Model</code>
 	 '*/
 	Method RemoveProxy:IProxy ( proxyName:String ) 
-		Local proxy:IProxy;
+		Local proxy:IProxy
 		If ( _model <> Null ) Then
 			Return _model.RemoveProxy ( proxyName )
 		Endif	
@@ -240,7 +241,7 @@ Public
 	 '* @return whether a Proxy is currently registered with the given <code>proxyName</code>.
 	 '*/
 	Method HasProxy : Bool( proxyName:String )
-		Return _model.HhasProxy( proxyName )
+		Return _model.HasProxy( proxyName )
 	End Method
 
 	'/**
@@ -299,7 +300,7 @@ Public
 	 '* @param type the type of the notification (optional)
 	 '*/ 
 	Method SendNotification:Void ( notificationName:String, body:Object=Null, type:String="" )
-		NotifyObservers( New Notification( notificationName, body, type ) );
+		NotifyObservers( New Notification( notificationName, body, type ) )
 	End Method
 	
 	'/**
@@ -347,7 +348,7 @@ Public
 	End Method
 	
 	'// The Singleton Facade instance.
-	Global _instance : Facade = Null
+	Global instance : Facade = Null
 	
 Private 
 	'// Private references to Model, View and Controller

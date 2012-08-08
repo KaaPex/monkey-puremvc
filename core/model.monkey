@@ -52,7 +52,7 @@ Public
 	 '* 
 	 '*/
 	Method New( )
-		_instance = Self;
+		instance = Self;
 		_proxyMap = New StringMap<IProxy>()	
 		InitializeModel();	
 	End Method
@@ -77,10 +77,10 @@ Public
 	 '* @return the Singleton instance
 	 '*/
 	Function GetInstance : IModel() 
-		If (_instance = Null) Then 
-			_instance = New Model( )
+		If (instance = Null) Then 
+			instance = New Model( )
 		Endif	
-		Return _instance
+		Return instance
 	End Function
 
 	'/**
@@ -89,7 +89,7 @@ Public
 	 '* @param proxy an <code>IProxy</code> to be held by the <code>Model</code>.
 	 '*/
 	Method RegisterProxy : Void( proxy:IProxy )
-		Self._proxyMap.Add( proxy.getProxyName(), proxy )
+		Self._proxyMap.Add( proxy.GetProxyName(), proxy )
 		proxy.OnRegister()
 	End Method
 
@@ -129,7 +129,7 @@ Public
 	End Method
 	
 	'// Singleton instance
-	Global _instance : IModel
+	Global instance : IModel
 	
 Private
 	'// Mapping of proxyNames to IProxy instances

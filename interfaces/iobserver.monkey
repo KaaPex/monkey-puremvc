@@ -4,7 +4,7 @@
  ' Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-Import ifunction
+Import reflection
 Import inotification
 
 '/**
@@ -55,7 +55,7 @@ Public Interface IObserver
 	 '* 
 	 '* @param notifyMethod the notification (callback) method of the interested object
 	 '*/
-	Method SetNotifyMethod:Void( notifyMethod:IFunction )
+	Method SetNotifyMethod:Void( notifyMethod:MethodInfo )
 	
 	'/**
 	 '* Set the notification context.

@@ -38,7 +38,7 @@ Import puremvc.patterns.observer.notifier
  '* @see org.puremvc.as3.patterns.command.SimpleCommand SimpleCommand
  '*/
  
-Public Class MacroCommand Extends Notifier Implements ICommand, INotifier
+Public Class MacroCommand Extends Notifier Implements ICommand', INotifier
 	
 	'/**
 	 '* Constructor. 
@@ -53,7 +53,7 @@ Public Class MacroCommand Extends Notifier Implements ICommand, INotifier
 	 '* sure to call <code>super()</code>.</P>
 	 '*/
 	Method New()
-		_subCommands = New Stack<ICommand>()
+		_subCommands = New Stack<ClassInfo>()
 		InitializeMacroCommand()		
 	End Method
 	
@@ -92,7 +92,7 @@ Public Class MacroCommand Extends Notifier Implements ICommand, INotifier
 	 '* 
 	 '* @param commandClassRef a reference to the <code>Class</code> of the <code>ICommand</code>.
 	 '*/
-	Method AddSubCommand: Void( commandClassRef:ICommand )
+	Method AddSubCommand: Void( commandClassRef:ClassInfo )
 		_subCommands.Push(commandClassRef)
 	End Method
 	
@@ -105,15 +105,15 @@ Public Class MacroCommand Extends Notifier Implements ICommand, INotifier
 	 '* 
 	 '* @param notification the <code>INotification</code> object to be passsed to each <i>SubCommand</i>.
 	 '*/
-	Public Final Method Execute : Void( notification:INotification )
+	Method Execute : Void( notification:INotification )
 		While _subCommands.Length() > 0
 			Local commandClassRef : ClassInfo = _subCommands.Pop()
-			Local commandInstance : ICommand = New commandClassRef()
+			Local commandInstance : ICommand =  ICommand(commandClassRef.NewInstance())
 			commandInstance.Execute( notification )
 		Wend
 	End Method
 		
 Private 
-	Field _subCommands:Stack<ICommand>
+	Field _subCommands:Stack<ClassInfo>
 							
 End Class

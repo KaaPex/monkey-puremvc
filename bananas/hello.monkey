@@ -21,9 +21,8 @@ Public
         Print "Grab a square and drag."
 		Print "Use Mousewheel to scale all squares up."
 		Print "(No wheel on Safari or Mac, sorry)"
-		ApplicationFacade.GetInstance().Startup( self )
-        hello = New HelloSprite("haha")  
-        Print hello._id   
+		hello = New HelloSprite("haha") 
+ 		ApplicationFacade.GetInstance().Startup( self )
         SetUpdateRate 60   
     End
     
@@ -33,13 +32,14 @@ Public
     End
     
     Method OnUpdate()
+
     	hello.Update()
     End     
 
 End
 
 Function Main()
-    New Game()
+	New Game()
 End
 
 '****************************************************************
@@ -53,17 +53,18 @@ Class StartupCommand Extends SimpleCommand Implements ICommand
 	'* which passed a reference to itself on the notification.
 	'*/
 	Method Execute : Void( note:INotification )    
-		_facade.RegisterProxy(New SpriteDataProxy())
-		'Local stage:Stage = note.getBody() as Stage;
-		'_facade.RegisterMediator( new StageMediator( stage ) )
+		facade.RegisterProxy(New SpriteDataProxy())
+		Local game:Game = Game(note.GetBody())
+		facade.RegisterMediator( New AppMediator( game ) )
 		SendNotification( ApplicationFacade.STAGE_ADD_SPRITE )
+		Print ApplicationFacade.STAGE_ADD_SPRITE
 	End Method
 End Class
 
-Class ApplicationFacade Extends Facade Implements IFacade
+Class ApplicationFacade Extends Facade 
 	'// Notification name constants
 	Const STARTUP:String          = "startup"
-	Const STAGE_ADD_SPRITE:String = "stageAddSprite"
+	Const STAGE_ADD_SPRITE:String = "helloAddSprite"
 	Const SPRITE_SCALE:String     = "spriteScale"
 	Const SPRITE_DROP:String      = "spriteDrop"
 	
@@ -71,10 +72,10 @@ Class ApplicationFacade Extends Facade Implements IFacade
 	'* Singleton ApplicationFacade Factory Method
 	'*/
 	Function GetInstance:ApplicationFacade()
-		If ( _instance = Null ) Then
-			_instance = New ApplicationFacade( )
+		If ( instance = Null ) Then
+			instance = New ApplicationFacade( )
 		Endif	
-		Return ApplicationFacade(_instance)
+		Return ApplicationFacade(instance)
 	End Function
 	
 	'/**
@@ -82,7 +83,8 @@ Class ApplicationFacade Extends Facade Implements IFacade
 	'*/
 	Method InitializeController : Void( ) 
 		Super.InitializeController()         
-		RegisterCommand( STARTUP, New StartupCommand())
+		RegisterCommand( STARTUP, GetClass("StartupCommand"))
+		Print STARTUP
 	End Method
 	        
 	Method Startup:Void( obj:Object )
@@ -92,7 +94,7 @@ Class ApplicationFacade Extends Facade Implements IFacade
 End Class
 
 'Model
-Class SpriteDataProxy Extends Proxy Implements IProxy
+Class SpriteDataProxy Extends Proxy 'Implements IProxy
 
 	Const NAME:String = "SpriteDataProxy"
 	
@@ -141,11 +143,11 @@ Public
 	 '* Get the next Sprite ID
 	 '*/
 	Method spriteCount:Float() Property
-		Return UnboxFloat(_data)
+		Return UnboxFloat(GetData())
 	End Method
 	
 	Method spriteCount:Void(count:Float) Property
-		_data = BoxFloat(count)
+		SetData(BoxFloat(count))
 	End Method
 		
 End Class
@@ -297,103 +299,7 @@ Public
 End Class
 
 'Mediators
-Class StageMediator Extends Mediator Implements IMediator
-
-	'// Cannonical name of the Mediator
-	Const NAME:String = "TestMediator"
-
-	'/**
-	'* Constructor. 
-	'*/
-	Method New( viewComponent:Object ) 
-		'// pass the viewComponent to the superclass where 
-		'// it will be stored in the inherited viewComponent property
-		Super.New( NAME, viewComponent )
-	    
-		'// Retrieve reference to frequently consulted Proxies
-		_spriteDataProxy = SpriteDataProxy (_facade.RetrieveProxy( SpriteDataProxy.NAME ))
-			
-		'// Listen for events from the view component 
-		'stage.addEventListener( MouseEvent.MOUSE_UP, handleMouseUp );
-	    'stage.addEventListener( MouseEvent.MOUSE_WHEEL, handleMouseWheel );
-	            
-	End Method
-
-
-	'/**
-	'* List all notifications this Mediator is interested in.
-	'* <P>
-	'* Automatically called by the framework when the mediator
-	'* is registered with the view.</P>
-	'* 
-	'* @return Array the list of Nofitication names
-	'*/
-	Method ListNotificationInterests:String[]() 
-		Return [ ApplicationFacade.STAGE_ADD_SPRITE ]
-	End Method
-
-	'/**
-	'* Handle all notifications this Mediator is interested in.
-	'* <P>
-	'* Called by the framework when a notification is sent that
-	'* this mediator expressed an interest in when registered
-	'* (see <code>listNotificationInterests</code>.</P>
-	'* 
-	'* @param INotification a notification 
-	'*/
-	Method HandleNotification:void( note:INotification ) 
-		Select ( note.GetName() )                
-			'// Create a new HelloSprite, 
-			'// Create and register its HelloSpriteMediator
-			'// and finally add the HelloSprite to the stage
-			Case ApplicationFacade.STAGE_ADD_SPRITE
-				Local params:Int[] = ArrayBoxer<Int>.Unbox(note.GetBody())
-				Local tSprite:HelloSprite = New HelloSprite( _spriteDataProxy.GetNextSpriteID(), params )
-				_facade.RegisterMediator(new HelloSpriteMediator( tSprite ))
-				'stage.addChild( helloSprite )
-	
-		end
-	End Method
-#rem
-	// The user has released the mouse over the stage
-        private function handleMouseUp(event:MouseEvent):void
-	{
-		sendNotification( ApplicationFacade.SPRITE_DROP );
-	}
-                    
-	// The user has released the mouse over the stage
-        private function handleMouseWheel(event:MouseEvent):void
-	{
-		sendNotification( ApplicationFacade.SPRITE_SCALE, event.delta );
-	}
-                   
-        /**
-         * Cast the viewComponent to its actual type.
-         * 
-         * <P>
-         * This is a useful idiom for mediators. The
-         * PureMVC Mediator class defines a viewComponent
-         * property of type Object. </P>
-         * 
-         * <P>
-         * Here, we cast the generic viewComponent to 
-         * its actual type in a protected mode. This 
-         * retains encapsulation, while allowing the instance
-         * (and subclassed instance) access to a 
-         * strongly typed reference with a meaningful
-         * name.</P>
-         * 
-         * @return stage the viewComponent cast to flash.display.Stage
-         */
-        protected function get stage():Stage{
-            return viewComponent as Stage;
-        }
-#end 	
-Private 
-	Field _spriteDataProxy:SpriteDataProxy
-End Class 
-
-Class HelloSpriteMediator Extends Mediator Implements IMediator
+Class HelloSpriteMediator Extends Mediator 'Implements IMediator
        
 '/**
 '* Constructor. 
@@ -408,7 +314,7 @@ Class HelloSpriteMediator Extends Mediator Implements IMediator
         Super.New( HelloSprite(viewComponent)._id, viewComponent )
     
 		'// Retrieve reference to frequently consulted Proxies
-		_spriteDataProxy = SpriteDataProxy(_facade.RetrieveProxy( SpriteDataProxy.NAME ))
+		_spriteDataProxy = SpriteDataProxy(facade.RetrieveProxy( SpriteDataProxy.NAME ))
 		
 		'// Listen for events from the view component 
 		'helloSprite.addEventListener( HelloSprite.SPRITE_DIVIDE, onSpriteDivide );
@@ -442,7 +348,7 @@ Class HelloSpriteMediator Extends Mediator Implements IMediator
 				'hello.DropSprite()
 			Case ApplicationFacade.SPRITE_SCALE
 				Local delta:Float = UnboxFloat(note.GetBody())
-				'hello.ScaleSprite(delta)
+				hello.ScaleSprite(delta)
 			End
 	End Method
 		
@@ -475,10 +381,110 @@ Class HelloSpriteMediator Extends Mediator Implements IMediator
 	'* 
 	'* @return stage the viewComponent cast to HelloSprite
 	'*/
-	Method GetHelloSprite:HelloSprite()
-		Return HelloSprite(_viewComponent)
+	Method hello:HelloSprite() Property
+		Return HelloSprite(GetViewComponent())
 	End Method
 
 Private 
 	Field _spriteDataProxy:SpriteDataProxy
-End class
+End Class
+
+'/**
+'* A Mediator for interacting with the App.
+'*/
+Public Class AppMediator Extends Mediator 'Implements IMediator
+
+	'// Cannonical name of the Mediator
+	Const NAME:String = "AppMediator"
+
+	'/**
+	' * Constructor. 
+	' */
+	Method New( viewComponent:Object ) 
+		'// pass the viewComponent to the superclass where 
+		'// it will be stored in the inherited viewComponent property
+		Super.New( NAME, viewComponent )
+    
+		'// Retrieve reference to frequently consulted Proxies
+		_spriteDataProxy = SpriteDataProxy( facade.RetrieveProxy( SpriteDataProxy.NAME ) )
+	
+		'// Listen for events from the view component 
+		'stage.addEventListener( MouseEvent.MOUSE_UP, handleMouseUp );
+		'stage.addEventListener( MouseEvent.MOUSE_WHEEL, handleMouseWheel );
+		            
+	End Method
+
+
+	'/**
+	'* List all notifications this Mediator is interested in.
+	'* <P>
+	'* Automatically called by the framework when the mediator
+	'* is registered with the view.</P>
+	'* 
+	'* @return Array the list of Nofitication names
+	'*/
+	Method ListNotificationInterests:String[]() 
+		Return [ ApplicationFacade.STAGE_ADD_SPRITE ]
+	End Method
+
+	'/**
+	'* Handle all notifications this Mediator is interested in.
+	'* <P>
+	'* Called by the framework when a notification is sent that
+	'* this mediator expressed an interest in when registered
+	'* (see <code>listNotificationInterests</code>.</P>
+	'* 
+	'* @param INotification a notification 
+	'*/
+	Method HandleNotification:void( note:INotification ) 
+
+		Select ( note.GetName() ) 
+                
+			'// Create a new HelloSprite, 
+			'// Create and register its HelloSpriteMediator
+			'// and finally add the HelloSprite to the stage
+			case ApplicationFacade.STAGE_ADD_SPRITE
+				Local params:Int[] = ArrayBoxer<Int>.Unbox(note.GetBody())
+				Local helloSprite:HelloSprite = New HelloSprite( _spriteDataProxy.GetNextSpriteID(), params )
+				facade.RegisterMediator(new HelloSpriteMediator( helloSprite ))
+				'stage.addChild( helloSprite )
+		End					
+	End Method
+
+	'// The user has released the mouse over the stage
+	Method HandleMouseLeft:Void()
+		SendNotification( ApplicationFacade.SPRITE_DROP );
+	End Method
+                    
+	'// The user has released the mouse over the stage
+	Method HandleMouseRight:Void()	
+		If ( MouseHit(MOUSE_RIGHT) = 1 ) Then
+			SendNotification( ApplicationFacade.SPRITE_SCALE, BoxFloat(Float(2)) )
+		Endif
+	End Method
+	
+	'/**
+	'* Cast the viewComponent to its actual type.
+	'* 
+	'* <P>
+	'* This is a useful idiom for mediators. The
+	'* PureMVC Mediator class defines a viewComponent
+	'* property of type Object. </P>
+	'* 
+	'* <P>
+	'* Here, we cast the generic viewComponent to 
+	'* its actual type in a protected mode. This 
+	'* retains encapsulation, while allowing the instance
+	'* (and subclassed instance) access to a 
+	'* strongly typed reference with a meaningful
+	'* name.</P>
+	'* 
+	'* @return Game the viewComponent cast to App
+	'*/
+	Method game:Game() Property
+		Return Game(GetViewComponent())
+	End method
+		
+Private 
+	Field _spriteDataProxy:SpriteDataProxy
+End Class

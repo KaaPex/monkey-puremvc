@@ -4,8 +4,8 @@
  'Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-
-Import puremvc.interfaces.IFunction
+Import reflection
+Import puremvc.interfaces.iobserver
 
 '/**
  '* A base <code>IObserver</code> implementation.
@@ -31,14 +31,14 @@ Import puremvc.interfaces.IFunction
 Public Class Observer Implements IObserver
 
 Private 
-	Field _notify:IFunction
+	Field _notify:MethodInfo
     Field _context:Object
 	'/**
 	 '* Get the notification method.
 	 '* 
 	 '* @return the notification (callback) method of the interested object.
 	 '*/
-	Method GetNotifyMethod:IFunction()
+	Method GetNotifyMethod:MethodInfo()
 		Return _notify
 	End Method
 	
@@ -62,7 +62,7 @@ Public
 	 '* @param notifyMethod the notification method of the interested object
 	 '* @param notifyContext the notification context of the interested object
 	 '*/
-	Method New( notifyMethod:IFunction, notifyContext:Object ) 
+	Method New( notifyMethod:MethodInfo, notifyContext:Object ) 
 		SetNotifyMethod( notifyMethod )
 		SetNotifyContext( notifyContext )
 	End Method
@@ -75,7 +75,7 @@ Public
 	 '* 
 	 '* @param notifyMethod the notification (callback) method of the interested object.
 	 '*/
-	Method SetNotifyMethod:Void( notifyMethod:IFunction )
+	Method SetNotifyMethod:Void( notifyMethod:MethodInfo )
 		_notify = notifyMethod
 	End Method
 	
@@ -95,7 +95,7 @@ Public
 	 '* @param notification the <code>INotification</code> to pass to the interested object's notification method.
 	 '*/
 	Method NotifyObserver:Void( notification:INotification )
-		self.GetNotifyMethod().OnNotification( notification );
+		Self.GetNotifyMethod().Invoke(Self.GetNotifyContext(), [Object(notification)] )
 	End Method
 
 	'/**

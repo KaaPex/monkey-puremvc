@@ -6,6 +6,7 @@
 Strict
 
 Import puremvc.interfaces.iproxy
+Import puremvc.interfaces.inotifier
 Import puremvc.patterns.observer.notifier
 	
 '/**
@@ -29,7 +30,7 @@ Import puremvc.patterns.observer.notifier
  '* 
  '* @see org.puremvc.as3.core.model.Model Model
  '*/
-Public Class Proxy Extends Notifier Implements IProxy, INotifier
+Public Class Proxy Extends Notifier Implements IProxy', INotifier
 
 	'/**
 	 '* Constructor
@@ -47,7 +48,7 @@ Public Class Proxy Extends Notifier Implements IProxy, INotifier
 	 '* Get the proxy name
 	 '*/
 	Method GetProxyName:String() 
-		Return proxyName
+		Return _proxyName
 	End Method		
 	
 	'/**
@@ -76,11 +77,13 @@ Public Class Proxy Extends Notifier Implements IProxy, INotifier
 	Method OnRemove:Void( ) 
 	End Method
 	
-	'// the data object
-	Field _data:Object
+
 		
 Private	
 	'// the proxy name
 	Field _proxyName:String = "Proxy"
+	
+	'// the data object
+	Field _data:Object	
 	
 End Class

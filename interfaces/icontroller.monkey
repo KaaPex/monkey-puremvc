@@ -4,8 +4,8 @@
 ' Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
+Import reflection
 Import inotification
-Import icommand
 
 '/**
  '* The interface definition for a PureMVC Controller.
@@ -38,7 +38,7 @@ Public Interface IController
 	 '* @param notificationName the name of the <code>INotification</code>
 	 '* @param commandClassRef the Class of the <code>ICommand</code>
 	 '*/
-	Method RegisterCommand:Void( notificationName : String, commandClassRef : ICommand )
+	Method RegisterCommand:Void( notificationName : String, commandClassRef : ClassInfo )
 	
 	'/**
 	 '* Execute the <code>ICommand</code> previously registered as the

@@ -4,7 +4,6 @@
  ' Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-Import inotifier
 Import inotification
 
 '/**
@@ -100,7 +99,7 @@ Import inotification
  '* 
  '* @see org.puremvc.as3.interfaces.INotification INotification
  '*/
-Public Interface IMediator Extends INotifier
+Public Interface IMediator
 	
 	'/**
 	 '* Get the <code>IMediator</code> instance name

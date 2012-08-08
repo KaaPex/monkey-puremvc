@@ -4,7 +4,7 @@
  'Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-
+Import puremvc.interfaces.inotifier
 Import puremvc.interfaces.icommand
 Import puremvc.interfaces.inotification
 Import puremvc.patterns.observer.notifier
@@ -20,7 +20,7 @@ Import puremvc.patterns.observer.notifier
  '* @see org.puremvc.as3.patterns.observer.Notification Notification
  '* @see org.puremvc.as3.patterns.command.MacroCommand MacroCommand
  '*/
-Public Class SimpleCommand Extends Notifier Implements ICommand, INotifier 
+Public Class SimpleCommand Extends Notifier Implements ICommand', INotifier 
 	
 	'/**
 	 '* Fulfill the use-case initiated by the given <code>INotification</code>.
@@ -33,7 +33,7 @@ Public Class SimpleCommand Extends Notifier Implements ICommand, INotifier
 	 '* 
 	 '* @param notification the <code>INotification</code> to handle.
 	 '*/
-	Public Method Execute : Void( notification:INotification )
+	Method Execute : Void( notification:INotification )
 		
 	End Method
 								

@@ -25,7 +25,7 @@ Import inotifier
  '* <LI>Encapsulate interaction with local or remote services used to fetch and persist model data.</LI>
  '* </UL>
  '*/
-Public Interface IProxy Extends INotifier
+Public Interface IProxy
 	
 	'/**
 	 '* Get the Proxy name

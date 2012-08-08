@@ -4,11 +4,11 @@
  'Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
+Import reflection
 Import monkey.map
 Import view
 Import puremvc.interfaces.icommand
 Import puremvc.interfaces.icontroller
-Import puremvc.interfaces.ifunction
 Import puremvc.interfaces.inotification
 Import puremvc.patterns.observer.observer
 	
@@ -60,9 +60,8 @@ Public Class Controller Implements IController
 	 '* 
 	 '*/
 	Method New( )
-		'If (instance <> Null) Throw Error(SINGLETON_MSG);
-		_instance = Self
-		_commandMap = New StringMap<ICommand>()
+		instance = Self
+		_commandMap = New StringMap<ClassInfo>()
 		InitializeController()
 	End Method
 	
@@ -72,10 +71,10 @@ Public Class Controller Implements IController
 	 '* @return the Singleton instance of <code>Controller</code>
 	 '*/
 	Function GetInstance : IController()
-		If ( _instance = Null ) Then
-			_instance = New Controller( )
+		If ( instance = Null ) Then
+			instance = New Controller( )
 		Endif	
-		Return _instance
+		Return instance
 	End Function
 
 	'/**
@@ -84,13 +83,13 @@ Public Class Controller Implements IController
 	 '* 
 	 '* @param note an <code>INotification</code>
 	 '*/
-	Method ExecuteCommand : void( note : INotification )
-		Local commandInstance : ICommand = ICommand(New _commandMap.Get( note.GetName() ))
+	Method ExecuteCommand : Void( notification : INotification )
+		Local commandInstance : ICommand = ICommand( _commandMap.Get( notification.GetName() ).NewInstance())
 		If ( commandInstance <> Null ) Then
-			commandInstance.Execute( note )
+			commandInstance.Execute( notification )
 		Endif	
-	End Method
-
+	End Method	 
+	 
 	'/**
 	 '* Register a particular <code>ICommand</code> class as the handler 
 	 '* for a particular <code>INotification</code>.
@@ -106,12 +105,12 @@ Public Class Controller Implements IController
 	 '* @param notificationName the name of the <code>INotification</code>
 	 '* @param commandClassRef the <code>Class</code> of the <code>ICommand</code>
 	 '*/
-	Method RegisterCommand : Void( notificationName : String, commandClassRef : ICommand )
-		If( Null <> _commandMap.Add( notificationName, commandClassRef ) ) Then
+	Method RegisterCommand : Void( notificationName : String, commandClassRef : ClassInfo )
+		If( _commandMap.Add( notificationName, commandClassRef ) = true ) Then
 			Return
 		Endif
 
-		_view.RegisterObserver(	notificationName, New Observer( New NotifyFunction(), Self ) )
+		_view.RegisterObserver(	notificationName, New Observer( GetClass(self).GetMethod("ExecuteCommand",[]), Self ) )
 	
 	End Method
 	
@@ -142,7 +141,7 @@ Public Class Controller Implements IController
 	End Method
 	
 	'// Singleton instance
-	Global _instance : IController
+	Global instance : IController
 		
 Private	
 	'/**
@@ -173,12 +172,6 @@ Private
 	Field _view : IView
 	
 	'// Mapping of Notification names to Command Class references
-	Field _commandMap : StringMap<ICommand>
+	Global _commandMap : StringMap<ClassInfo>
 
-End Class
-
-Class NotifyFunction Implements IFunction
-	Method  OnNotification:Void( notification:INotification  )
-		ExecuteCommand( notification )
-	End Method
 End Class

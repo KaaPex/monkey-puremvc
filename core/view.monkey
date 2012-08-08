@@ -7,7 +7,6 @@ Strict
 
 Import monkey.map
 Import monkey.list
-Import puremvc.interfaces.ifunction
 Import puremvc.interfaces.imediator
 Import puremvc.interfaces.inotification
 Import puremvc.interfaces.iobserver
@@ -48,7 +47,7 @@ Class View Implements IView
 	 '* 
 	 '*/
 	Method New( )
-		_instance = Self
+		instance = Self
 		_mediatorMap = New StringMap<IMediator>()
 		_observerMap = New StringMap<List<IObserver>>()	
 		InitializeView()
@@ -74,10 +73,10 @@ Class View Implements IView
 	 '* @return the Singleton instance of <code>View</code>
 	 '*/
 	Function GetInstance : IView() 
-		If ( _instance = Null ) Then
-			_instance = New View( )
+		If ( instance = Null ) Then
+			instance = New View( )
 		Endif	
-		Return _instance
+		Return instance
 	End Function
 			
 	'/**
@@ -92,7 +91,8 @@ Class View Implements IView
 			_observerMap.Add( notificationName, New List<IObserver>() )
 		Endif	
 		Local observers:List<IObserver> = List<IObserver> (_observerMap.Get(notificationName))
-		observers.AddLast(observer)		
+		observers.AddLast(observer)	
+		_observerMap.Set(notificationName, observers)
 	End Method
 
 	'/**
@@ -107,17 +107,17 @@ Class View Implements IView
 	 '*/
 	Method NotifyObservers : Void( notification:INotification )
 		'// Get a reference to the observers list for this notification name
-		Local observers_ref:List<IObserver> = _List<IObserver> ( _observerMap.Get(notification.getName()) )
+		Local observers_ref:List<IObserver> = List<IObserver> ( _observerMap.Get(notification.GetName()) )
 		
 		If( observers_ref <> Null ) Then
 					
 			'// Copy observers from reference array to working array, 
 			'// since the reference array may change during the notification loop
-			Object[] observers = Object[] (observers_ref.ToArray())
+			Local observers:IObserver[] = observers_ref.ToArray()
 			
 			'// Notify Observers from the working array				
 			For Local i:Int = 0 Until observers.Length()
-				IObserver observer = IObserver (observers[i])
+				Local observer:IObserver = IObserver (observers[i])
 				observer.NotifyObserver(notification)
 			Next
 		Endif
@@ -131,11 +131,12 @@ Class View Implements IView
 	 '*/
 	Method RemoveObserver:Void( notificationName:String, notifyContext:Object )
 		'// the observer list for the notification under inspection
-		 Local observers:List<IObserver> = _observerMap.Get(notificationName)
+		Local observers:List<IObserver> = _observerMap.Get(notificationName)
 
 		If ( observers <> Null ) Then
 			'// find the observer for the notifyContext
-			For Local observer:Observer = Eachin observers 
+			For Local obs:IObserver = Eachin observers
+				Local observer:Observer = Observer(obs)
 				If ( observer.CompareNotifyContext( notifyContext ) = True ) Then
 					'// there can only be one Observer for a given notifyContext 
 					'// in any given Observer list, so remove it and break
@@ -185,7 +186,7 @@ Class View Implements IView
 		If ( noteInterests.Length() > 0 ) Then
 
 			'// Create Observer referencing this mediator's handlNotification method
-			Local observer:Observer = new Observer( New NotifyFunction(mediator), mediator )
+			Local observer:Observer = New Observer( GetClass(mediator).GetMethod("HandleNotification",[]), mediator )
 
 			'// Register Mediator as Observer for its list of Notification interests
 			For Local i:Int=0 Until noteInterests.Length()
@@ -194,7 +195,7 @@ Class View Implements IView
 		Endif
 		
 		'// alert the mediator that it has been registered
-		mediator.onRegister()
+		mediator.OnRegister()
 		
 	End Method
 
@@ -248,7 +249,7 @@ Class View Implements IView
 	End Method
 	
 	'// Singleton instance
-	Global _instance	: IView
+	Global instance	: IView
 	
 Private
 	'// Mapping of Mediator names to Mediator instances
@@ -257,15 +258,4 @@ Private
 	'// Mapping of Notification names to Observer lists
 	Field _observerMap	: StringMap<List<IObserver>>
 	
-End Class
-
-Class NotifyFunction Implements IFunction
-	Field _mediator:IMediator
-	
-	Method New(medi:IMediator)
-		_mediator = medi
-	End Method
-	Method  OnNotification:Void( notification:INotification  )
-		_mediator.ExecuteCommand( notification )
-	End Method
 End Class

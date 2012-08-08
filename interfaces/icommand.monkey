@@ -4,7 +4,6 @@
 ' Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-Import inotifier
 Import inotification
 
 '/**
@@ -12,7 +11,7 @@ Import inotification
  '*
  '* @see puremvc.interfaces INotification
  '*/
-Public Interface ICommand Extends INotifier
+Public Interface ICommand
 	'/**
 	' * Execute the <code>ICommand</code>'s logic to handle a given <code>INotification</code>.
 	' * 

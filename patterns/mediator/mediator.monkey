@@ -15,7 +15,7 @@ Import puremvc.patterns.observer.notifier
  '* 
  '* @see org.puremvc.as3.core.view.View View
  '*/
-Public Class Mediator Extends Notifier Implements IMediator, INotifier
+Public Class Mediator Extends Notifier Implements IMediator', INotifier
 
 	'/**
 	 '* The name of the <code>Mediator</code>. 
@@ -75,7 +75,7 @@ Public
 	 '* @return the view component
 	 '*/		
 	Method GetViewComponent:Object()
-		Return viewComponent;
+		Return _viewComponent
 	End Method
 
 	'/**
@@ -111,12 +111,10 @@ Public
 	Method OnRemove:Void( )
 	End Method
 	
-	'// The view component
-	Field _viewComponent:Object
-	
 Private
 	'// the mediator name
 	Field _mediatorName:String
 
-
+	'// The view component
+	Field _viewComponent:Object
 End Class

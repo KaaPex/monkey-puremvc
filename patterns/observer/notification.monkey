@@ -4,7 +4,7 @@
  'Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-
+Import reflection
 Import puremvc.interfaces.inotification
 	
 '/**
@@ -104,14 +104,14 @@ Public Class Notification Implements INotification
 	 '* @return the string representation of the <code>Notification</code> instance.
 	 '*/
 	Method ToString:String()
-		String result = "Notification Name: " + GetName() + " Body:"
-		If( body <> Null ) Then
-		'	result += _body.ToString() + " Type:"
+		Local result:String = "Notification Name: " + GetName() + " Body:"
+		If( _body <> Null ) Then
+			result += GetClass(_body).Name() + " Type:"
 		Else
 			result += "null Type:"
 		Endif	
 		
-		If( type <> Null ) Then
+		If( _type <> "" ) Then
 			result += _type
 		Else
 			result += "null "

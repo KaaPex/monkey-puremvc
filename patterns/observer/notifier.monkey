@@ -4,7 +4,7 @@
  'Copyright: Monkey port - 2012 Aleksey 'KaaPex' Kazantsev
 '*/
 Strict
-
+Import puremvc.interfaces.inotifier
 Import puremvc.patterns.facade.facade
 	
 '/**
@@ -51,7 +51,7 @@ Public Class Notifier Implements INotifier
 	 '*/
 
 	Method SendNotification:Void(  notificationName:String,  body:Object, type:String )
-		_facade.SendNotification( notificationName, body, type )
+		facade.SendNotification( notificationName, body, type )
 	End Method
 	
 	'/**
@@ -68,7 +68,7 @@ Public Class Notifier Implements INotifier
 	 '*/
 
 	Method SendNotification:Void( notificationName:String,  body:Object)
-		_facade.SendNotification( notificationName, body )
+		facade.SendNotification( notificationName, body )
 	End Method
 	
 	'/**
@@ -83,13 +83,13 @@ Public Class Notifier Implements INotifier
 	 '*/
 
 	Method SendNotification:Void( notificationName:String)
-		_facade.SendNotification( notificationName )
+		facade.SendNotification( notificationName )
 	End Method
 	
 	'// The Multiton Key for this app
 	'/**
 	 '* Local reference to the Facade Singleton
 	 '*/
-	Field _facade:Facade = Facade.GetInstance()
+	Field facade:IFacade = Facade.GetInstance()
 		
 End Class
